@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Search Medicines{% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+ 
+  <div class="d-flex align-items-center">
+   
+    <i class="fas fa-clinic-medical fa-2x mr-2"></i>
+    <div>
+      <h3>Welcome to Sri Santha Vet Pharmacy</h3>
+      <p>
+        <i class="fas fa-map-marker-alt"></i> {{ location_city }} &nbsp;&nbsp;
+        <i class="fas fa-clock"></i> {{ current_date_time }} &nbsp;&nbsp;
+        <i class="fas fa-cloud-sun"></i> Live Weather: {{ live_weather }}
+           </p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end mb-3">
+    <a href="{{ url_for('add_medicine') }}" class="btn btn-primary mr-2">Add Medicine</a>
+    <a href="{{ url_for('add_supplier_medicine') }}" class="btn btn-info mr-2">Add Supplier Medicine</a>
+   
+  </div>
+
+  <!-- A to Z Alphabetical Index -->
+  <div class="alphabet-index mb-3">
+    {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+      <a href="{{ url_for('alphabet_filter', letter=letter) }}" class="btn btn-link">{{ letter }}</a>
+    {% endfor %}
+  </div>
+
+  <!-- Search Form with button on the right -->
+<h1>Search Medicines</h1>
+<form method="GET" action="/">
+  <div class="input-group mb-3">
+    <input type="text" name="medicine_name" class="form-control" placeholder="Search medicine..." aria-label="Search medicine">
+    <div class="input-group-append">
+      <button class="btn btn-secondary" type="submit">Search</button>
+    </div>
+  </div>
+</form>
+
+
+<!-- A section to display the expiry threshold (if desired) -->
+<p><strong>Expiry Threshold:</strong> {{ expiry_threshold.strftime('%Y-%m-%d') }}</p>
+
+<!-- Section for Expiring Soon Medicines -->
+<h2>Expiring Soon Medicines (Within 90 Days)</h2>
+{% if expiring_medicines %}
+  <ul>
+    {% for med in expiring_medicines %}
+      <li>
+        {{ med.name }} – expires on {{ med.expiry_date.strftime('%Y-%m-%d') }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No medicines are expiring within the next 90 days.</p>
+{% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Edit Medicine{% endblock %}
+{% block content %}
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+  </div>
+  <h1>Edit Medicine</h1>
+  <form action="{{ url_for('edit_medicine', id=medicine.id) }}" method="POST">
+    <!-- Include CSRF Token -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="form-group">
+      <label for="medicine_name">Medicine Name</label>
+      <input type="text" id="medicine_name" name="medicine_name" class="form-control" value="{{ medicine.name }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="batch_number">Batch Number</label>
+      <input type="text" id="batch_number" name="batch_number" class="form-control" value="{{ medicine.batch_number }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="purchase_date">Purchase Date</label>
+      <input type="date" id="purchase_date" name="purchase_date" class="form-control" value="{{ medicine.purchase_date.strftime('%Y-%m-%d') }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="pkg_size">Package Size</label>
+      <input type="text" id="pkg_size" name="pkg_size" class="form-control" value="{{ medicine.pkg_size }}">
+    </div>
+    
+    <div class="form-group">
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" name="quantity" class="form-control" value="{{ medicine.quantity }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="expiry_date">Expiry Date</label>
+      <input type="date" id="expiry_date" name="expiry_date" class="form-control" value="{{ medicine.expiry_date.strftime('%Y-%m-%d') }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="mrp">MRP</label>
+      <input type="number" id="mrp" name="mrp" class="form-control" step="0.01" value="{{ medicine.mrp }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="manufacturer">Manufacturer Name</label>
+      <input type="text" id="manufacturer" name="manufacturer" class="form-control" value="{{ medicine.manufacturer }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="supplier">Supplier Name</label>
+      <input type="text" id="supplier" name="supplier_name" class="form-control" value="{{ medicine.supplier_name }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Medicine</button>
+  </form>
+
+ <!-- Delete Medicine Form -->
+ <form action="{{ url_for('delete_medicine', id=medicine.id) }}" method="POST" style="margin-top: 20px;" onsubmit="return confirm('Are you sure you want to delete this medicine?');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-danger">Delete Medicine</button>
+  </form>
+
+  <!-- Back to Search Button -->
+  <div class="text-center mt-4">
+    <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+  </div>
+{% endblock %}

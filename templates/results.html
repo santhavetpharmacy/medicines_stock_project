@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+{% block content %}
+
+<!-- Back to Search button at the top -->
+<div class="text-center mb-3">
+  <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+</div>
+  <h1 class="mt-4">Search Results: "{{ search_term }}"</h1>
+
+
+   <!-- Toggle Button for the Filter Row -->
+   <button id="toggleFilters" class="btn btn-secondary mb-3">Hide Filters</button>
+
+  <table class="table table-bordered" id="resultsTable">
+    <thead class="thead-dark">
+      <tr>
+        <th>Date of Purchase</th>
+        <th>Batch Number</th>
+        <th>Manufacturer</th>
+        <th>Medicine Name</th>
+        <th>Pkg Size</th>
+        <th>Quantity</th>
+        <th>Expiry Date</th>
+        <th>Supplier Name</th>
+        <th>MRP</th>
+        <th>Actions</th>
+      </tr>
+      <!-- Filter Row -->
+       <!-- Filter Row: This row can be toggled -->
+      <tr class="filter-row">
+        <th><input type="text" placeholder="Filter Date"></th>
+        <th><input type="text" placeholder="Filter Batch"></th>
+        <th><input type="text" placeholder="Filter Manufacturer"></th>
+        <th><input type="text" placeholder="Filter Medicine"></th>
+        <th><input type="text" placeholder="Filter Pkg Size"></th>
+        <th><input type="text" placeholder="Filter Qty"></th>
+        <th><input type="text" placeholder="Filter Expiry"></th>
+        <th><input type="text" placeholder="Filter Supplier"></th>
+        <th><input type="text" placeholder="Filter MRP"></th>
+        <th></th> <!-- No filter for the actions column -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for medicine in medicines %}
+      <tr {% if medicine.expiry_date < expiry_threshold %} class="table-danger" {% endif %}>
+        <td>{{ medicine.purchase_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ medicine.batch_number }}</td>
+        <td>{{ medicine.manufacturer }}</td>
+        <td>{{ medicine.name }}</td>
+        <td>{{ medicine.pkg_size }}</td>
+        <td>{{ medicine.quantity }}</td>
+        <td>{{ medicine.expiry_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ medicine.supplier_name }}</td>
+        <td>{{ medicine.mrp }}</td>
+        <td>
+          
+          <a href="{{ url_for('edit_medicine', id=medicine.id) }}" class="btn btn-sm btn-warning">Edit</a>
+
+          <form method="POST" action="{{ url_for('delete_medicine', id=medicine.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this record?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+
+  <!-- JavaScript for filtering -->
+  <script>
+
+      document.getElementById("toggleFilters").addEventListener("click", function() {
+      var filterRow = document.querySelector(".filter-row");
+      // Toggle display
+      if (filterRow.style.display === "none") {
+        filterRow.style.display = "table-row";
+        this.textContent = "Hide Filters";
+      } else {
+        filterRow.style.display = "none";
+        this.textContent = "Show Filters";
+      }
+   
+  
+    });
+
+
+      function filterTable() {
+      // Get the table by its ID
+      var table = document.getElementById("resultsTable");
+      var filterInputs = document.querySelectorAll(".filter-row input");
+      var tbody = table.getElementsByTagName("tbody")[0];
+      var rows = tbody.getElementsByTagName("tr");
+
+      // Loop over each row in the tbody
+      for (var i = 0; i < rows.length; i++) {
+        var showRow = true;
+        var cells = rows[i].getElementsByTagName("td");
+
+        // Check each filter input against the corresponding cell text
+        for (var j = 0; j < filterInputs.length; j++) {
+          var filterValue = filterInputs[j].value.toLowerCase().trim();
+          if (filterValue !== "") {
+            var cellText = cells[j].textContent || cells[j].innerText;
+            if (cellText.toLowerCase().indexOf(filterValue) === -1) {
+              showRow = false;
+              break;
+            }
+          }
+        }
+        rows[i].style.display = showRow ? "" : "none";
+      }
+    }
+
+    // Add event listeners to every filter input to call filterTable on keyup
+    var filterInputs = document.querySelectorAll(".filter-row input");
+    filterInputs.forEach(function(input) {
+      input.addEventListener("keyup", filterTable);
+    });
+  </script>
+
+  <style>
+    /* Set a fixed width for all columns except "Medicine Name" */
+    #resultsTable th, #resultsTable td {
+      white-space: nowrap; /* Prevent text wrapping */
+      max-width: 1px; /* Set a default max width */
+      overflow: hidden;
+      text-overflow: ellipsis; /* Add ellipsis for overflow */
+    }
+
+    /* Allow "Medicine Name" to be wider */
+    #resultsTable th:nth-child(4), #resultsTable td:nth-child(4) {
+      max-width: 50px; /* Set a larger width for "Medicine Name" */
+    }
+
+    /* Make the table responsive */
+    #resultsTable {
+      table-layout: fixed; /* Ensure fixed column widths */
+      width: 120%; /* Fit the table within the page */
+    }
+  </style>
+
+
+{% endblock %}

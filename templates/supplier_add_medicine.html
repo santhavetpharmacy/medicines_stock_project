@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Add Medicine by Supplier{% endblock %}
+{% block content %}
+<div class="text-center mb-3">
+    <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+  </div>
+  <h1>Add Medicine for a Supplier</h1>
+  <form action="{{ url_for('add_supplier_medicine') }}" method="POST">
+    
+    <!-- Include CSRF token -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+   
+    <!-- Supplier Name -->
+    <div class="form-group">
+      <label for="supplier_name">Supplier Name</label>
+      <input type="text" name="supplier_name" id="supplier_name" class="form-control" placeholder="Enter supplier name" required>
+    </div>
+    <!-- Medicine Name -->
+    <div class="form-group">
+      <label for="medicine_name">Medicine Name</label>
+      <input type="text" name="medicine_name" id="medicine_name" class="form-control" placeholder="Enter medicine name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="manufacturer">Manufacturer Name</label>
+        <input type="text" id="manufacturer" name="manufacturer" class="form-control" placeholder="Enter Manufacturer Name" required>
+      </div>
+    <!-- Batch Number -->
+    <div class="form-group">
+      <label for="batch_number">Batch Number</label>
+      <input type="text" name="batch_number" id="batch_number" class="form-control" placeholder="Enter batch number" required>
+    </div>
+    <!-- Purchase Date -->
+    <div class="form-group">
+      <label for="purchase_date">Purchase Date</label>
+      <input type="date" name="purchase_date" id="purchase_date" class="form-control" required>
+    </div>
+    <!-- Package Size -->
+    <div class="form-group">
+      <label for="pkg_size">Package Size</label>
+      <input type="text" name="pkg_size" id="pkg_size" class="form-control" placeholder="Enter package size" required>
+    </div>
+    <!-- Quantity -->
+    <div class="form-group">
+      <label for="quantity">Quantity</label>
+      <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Enter quantity" min="1" required>
+    </div>
+    <!-- Expiry Date -->
+    <div class="form-group">
+      <label for="expiry_date">Expiry Date</label>
+      <input type="date" name="expiry_date" id="expiry_date" class="form-control" required>
+    </div>
+    <!-- MRP -->
+    <div class="form-group">
+      <label for="mrp">MRP</label>
+      <input type="number" name="mrp" id="mrp" class="form-control" placeholder="Enter MRP" step="0.01" required>
+    </div>
+
+ <!-- Manufacturer Field -->
+ <div class="form-group">
+    <label for="manufacturer">Manufacturer Name</label>
+    <input type="text" name="manufacturer" id="manufacturer" class="form-control" placeholder="Enter Manufacturer Name" required>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" name="action" value="save" class="btn btn-success">Submit</button>
+      <!-- Save and continue adding more records -->
+      <button type="submit" name="action" value="save_add_another" class="btn btn-primary">Submit and Add Another</button>
+    </div>
+  </form>
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('search') }}" class="btn btn-secondary">Back to Search</a>
+  </div>
+{% endblock %}
